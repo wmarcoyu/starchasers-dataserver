@@ -1,0 +1,56 @@
+# .gitignore for starchaser-dataserver.
+
+# MacOS system files
+*.DS_Store
+
+# XCode files
+*.xcodeproj/
+DerivedData/
+build/
+xuserdata/
+
+# Output files
+*.out
+
+# Compile object files and executables
+*.o
+*.exe
+*.app
+
+# Python virtual environment
+env/
+
+# Python cached files.
+__pycache__/
+
+# Temporary files.
+tmp/
+
+# Playground.
+demo.py
+thoughts.org
+
+# Log files.
+*.log*
+
+# Text files that record process and thoughts.
+TODO.org
+gefs_key_value_pairs.txt
+
+# Large databases.
+data/
+history_data/
+databases/
+*.tif
+
+# Tile images.
+dataserver/static/
+
+# Shape files.
+preprocessing/light_pollution/NPS/
+
+# Credentials
+credentials/
+
+# AWS EC2 domain.
+aws-domain.txt

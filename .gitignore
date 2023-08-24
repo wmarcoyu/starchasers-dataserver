@@ -29,6 +29,7 @@ tmp/
 # Playground.
 demo.py
 thoughts.org
+deployment-issues.md
 
 # Log files.
 *.log*
@@ -38,7 +39,7 @@ TODO.org
 gefs_key_value_pairs.txt
 
 # Large databases.
-data/
+data/*
 history_data/
 databases/
 *.tif
@@ -54,3 +55,10 @@ credentials/
 
 # AWS EC2 domain.
 aws-domain.txt
+
+# Do not ignore these files in data/.
+!data/0p25_lats.npy
+!data/0p25_lngs.npy
+!data/score_table.npy
+!data/sky_transparency_table.npy
+!meteor_shower_table.json

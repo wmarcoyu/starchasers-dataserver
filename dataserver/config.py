@@ -41,7 +41,7 @@ logger = setup_logger("logs/download.log")
 
 
 # TODO: adjust this in production.
-DATABASE_USER = "marco.w"
+DATABASE_USER = "ec2-user"
 
 with open(
         SERVER_ROOT/"credentials"/"config.json", "r", encoding="utf-8"

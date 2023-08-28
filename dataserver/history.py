@@ -21,7 +21,7 @@ GEFS_FILENAME = "gefs.chem.t12z.a2d_0p25.f000.grib2.idx"
 # Time span: 12 years (right exclusive)
 DATA_TIME = 12
 # Maximum number of `downloader` threads
-MAX_WORKERS = 12
+MAX_WORKERS = 1
 
 
 # pylint: disable=too-few-public-methods

@@ -7,7 +7,7 @@ import pygrib
 from dataserver.config import logger
 
 
-MAX_WORKERS = 12
+MAX_WORKERS = 1
 INT_MAX = 2**32 - 1
 DATA_RETENTION_DAYS = 3
 

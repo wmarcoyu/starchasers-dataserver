@@ -9,7 +9,7 @@ app.config.from_object("dataserver.config")
 import dataserver.model  # noqa: E402  pylint: disable=wrong-import-position
 import dataserver.api  # noqa: E402  pylint: disable=wrong-import-position
 import dataserver.controllers  # noqa: E402  pylint: disable=wrong-import-position
-
+import dataserver.views  # noqa: E402  pylint: disable=wrong-import-position
 
 LATS = np.load("data/0p25_lats.npy")
 LNGS = np.load("data/0p25_lngs.npy")

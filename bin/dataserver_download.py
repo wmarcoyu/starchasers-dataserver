@@ -14,7 +14,7 @@ from dataserver.config import logger
 from dataserver.process import process, process_gfs_file, process_gefs_file
 
 
-MAX_WORKERS = 12
+MAX_WORKERS = 1
 REQUEST_INTERVAL = 6
 SCHEDULE_CHECK_INTERVAL = 300
 RETRY_TIME = 1800
@@ -127,16 +127,15 @@ def download_data():
     urls = get_urls(current_date, current_time)
     gfs_url, gefs_url = urls["gfs"], urls["gefs"]
 
-    # TODO: remove ".idx" for actual prediction data
     # GFS data are hourly predictions.
     gfs_file_transfer_info = \
-        [(f"{gfs_url}/gfs.t{current_time}z.pgrb2.0p25.f{hour:03d}.idx",
+        [(f"{gfs_url}/gfs.t{current_time}z.pgrb2.0p25.f{hour:03d}",
           f"data/{current_date}/{current_time}/gfs/gfs.f{hour:03d}")
          for hour in range(MAX_PREDICTION_HOURS)]
     # GEFS data have 3-hour intervals.
     gefs_file_transfer_info = \
         [(f"{gefs_url}/gefs.chem.t{current_time}z.a2d_0p25.f{hour:03d}."
-          "grib2.idx",
+          "grib2",
           f"data/{current_date}/{current_time}/gefs/gefs.f{hour:03d}")
          for hour in range(0, MAX_PREDICTION_HOURS, 3)]
 

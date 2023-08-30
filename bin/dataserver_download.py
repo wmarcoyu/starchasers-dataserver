@@ -14,6 +14,7 @@ from dataserver.logger import logger
 from dataserver.process import process, process_gfs_file, process_gefs_file
 
 
+# It turns out that multiple threads easily run out of memory on AWS EC2.
 MAX_WORKERS = 1
 REQUEST_INTERVAL = 6
 SCHEDULE_CHECK_INTERVAL = 300
@@ -173,7 +174,8 @@ if __name__ == "__main__":
     # uploaded around 4 hours later. Default timezone used by AWS EC2
     # is UTC, whereas local machines have default timezones corresponding
     # to their local timezones.
-    for job_time in ["04:00", "10:00", "16:00", "22:00"]:
+    # for job_time in ["04:00", "10:00", "16:00", "22:00"]:
+    for job_time in ["01:15"]:
         schedule.every().day.at(job_time).do(download_data)
 
     while True:

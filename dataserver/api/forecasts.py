@@ -8,7 +8,8 @@ import ephem
 import pytz
 import dataserver
 from dataserver.api.authenticate import authenticate
-from dataserver.config import logger, SCORE_TABLE_PATH
+from dataserver.config import SCORE_TABLE_PATH
+from dataserver.logger import logger
 from dataserver.api.utilities import get_directory, get_timezone, \
     get_forecast_type_and_hour, get_coordinates, get_lat_lng_idx, round_time, \
     get_light_pollution_score, get_milky_way_max_angle, \

@@ -4,7 +4,7 @@ import shutil
 from datetime import datetime, timedelta
 import numpy as np
 import pygrib
-from dataserver.config import logger
+from dataserver.logger import logger
 
 
 MAX_WORKERS = 1
@@ -167,4 +167,9 @@ def delete_stale_data(current_date):
     given_date = datetime.strptime(current_date, "%Y%m%d")
     target_date = given_date - timedelta(days=DATA_RETENTION_DAYS)
     target_date = target_date.strftime("%Y%m%d")
-    shutil.rmtree(f"data/{target_date}")
+    logger.info("Start deleting data for %s.", target_date)
+    try:
+        shutil.rmtree(f"data/{target_date}")
+    except FileNotFoundError as _:
+        logger.warning("Directory not found: %s", target_date)
+    logger.info("%s data deletion complete.", target_date)

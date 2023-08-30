@@ -43,6 +43,7 @@ data/*
 history_data/
 databases/
 *.tif
+*.geotiff
 
 # Tile images.
 dataserver/static/

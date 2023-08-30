@@ -6,7 +6,7 @@ import ephem
 import pytz
 from timezonefinder import TimezoneFinder
 import dataserver
-from dataserver.config import logger
+from dataserver.logger import logger
 from preprocessing.light_pollution.bortle import get_bortle
 
 

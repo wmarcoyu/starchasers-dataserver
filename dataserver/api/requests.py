@@ -2,7 +2,7 @@
 import flask
 from flask import request
 import dataserver
-from dataserver.config import logger
+from dataserver.logger import logger
 
 
 @dataserver.app.route("/api/get-park-name/")

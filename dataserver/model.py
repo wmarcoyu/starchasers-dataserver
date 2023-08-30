@@ -2,7 +2,14 @@
 import flask
 import numpy as np
 import dataserver
-from dataserver.config import parks_connection_pool, users_connection_pool
+from dataserver.config import parks_connection_pool, users_connection_pool, \
+    light_pollution_connection_pool
+
+
+# NOTE: I tried to reduce code duplication here but it didn't work. It seems
+# that flask.g only accepts literal values as its keys instead of variables.
+# E.g. flask.g.parks_db = parks_connection_pool.getconn() works but
+# flask.g[key] where `key` is a variable (function parameter) does not work.
 
 
 def get_parks_db():
@@ -51,6 +58,24 @@ def close_users_db(error=None):
     if database_connection is not None:
         database_connection.commit()
         users_connection_pool.putconn(database_connection)
+
+
+def get_light_pollution_db():
+    """Establish a connection to `light_pollution` database."""
+    if "light_pollution_db" not in flask.g:
+        flask.g.light_pollution_db = \
+            light_pollution_connection_pool.getconn()
+    return flask.g.light_pollution_db
+
+
+@dataserver.app.teardown_appcontext
+def close_light_pollution_db(error=None):
+    """Release a connection back to pool."""
+    assert error or not error  # avoid unused parameter error
+    database_connection = flask.g.pop("light_pollution_db", None)
+    if database_connection is not None:
+        database_connection.commit()
+        light_pollution_connection_pool.putconn(database_connection)
 
 
 def get_lat_idx(target_lat):

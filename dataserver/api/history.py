@@ -9,7 +9,7 @@ import dataserver
 from dataserver.api.authenticate import authenticate
 from dataserver.api.utilities import get_lat_lng_idx, get_coordinates, \
     get_timezone, get_milky_way_max_angle, get_bortle_class
-from dataserver.config import logger
+from dataserver.logger import logger
 
 
 @dataserver.app.route("/api/historical-transparency/")

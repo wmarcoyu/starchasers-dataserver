@@ -10,7 +10,7 @@ import os
 import subprocess
 import schedule
 from ratelimiter import RateLimiter
-from dataserver.config import logger
+from dataserver.logger import logger
 from dataserver.process import process, process_gfs_file, process_gefs_file
 
 

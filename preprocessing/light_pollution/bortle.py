@@ -8,12 +8,8 @@ http://dx.doi.org/10.1126/sciadv.1600377
 """
 import numpy as np
 import rasterio
-
-
-FILENAME = "preprocessing/light_pollution/World_Atlas_2015.tif"
-
-with rasterio.open(FILENAME) as src:
-    data = src.read()
+from dataserver.model import get_light_pollution_db
+from dataserver.logger import logger
 
 
 def get_transform():
@@ -40,8 +36,24 @@ def lng_lat_to_row_col(lng, lat):
 
 def get_brightness(lng, lat):
     """Read the brightness value at location (lng, lat) from the map."""
-    row, col = lng_lat_to_row_col(lng, lat)
-    return data[0][row][col]
+    connection = get_light_pollution_db()
+    cursor = connection.cursor()
+    cursor.execute(
+        "SELECT ST_Value(rast, ST_SetSRID(ST_Point(%s, %s), 4326)) "
+        "FROM public.light_pollution "
+        "WHERE ST_Intersects(rast, ST_SetSRID(ST_Point(%s, %s), 4326));",
+        (lng, lat, lng, lat, )
+    )
+
+    try:
+        data = cursor.fetchone()
+    except TypeError as _:
+        logger.error(
+            "Non-unique light pollution results found for coordinates "
+            "(lat=%s, lng=%s)", lat, lng
+        )
+
+    return data[0]
 
 
 def get_sqm(lng, lat):

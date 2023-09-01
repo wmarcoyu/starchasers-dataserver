@@ -174,8 +174,7 @@ if __name__ == "__main__":
     # uploaded around 4 hours later. Default timezone used by AWS EC2
     # is UTC, whereas local machines have default timezones corresponding
     # to their local timezones.
-    # for job_time in ["04:00", "10:00", "16:00", "22:00"]:
-    for job_time in ["01:15"]:
+    for job_time in ["04:00", "10:00", "16:00", "22:00"]:
         schedule.every().day.at(job_time).do(download_data)
 
     while True:

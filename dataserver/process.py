@@ -9,7 +9,7 @@ from dataserver.logger import logger
 
 MAX_WORKERS = 1
 INT_MAX = 2**32 - 1
-DATA_RETENTION_DAYS = 3
+DATA_RETENTION_DAYS = 2
 
 
 def process(current_date, current_time):

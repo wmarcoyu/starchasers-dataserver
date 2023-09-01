@@ -25,9 +25,9 @@ def process(current_date, current_time):
     # Mark the processing as complete.
     completion_flag = f"data/{current_date}/{current_time}/complete.flag"
     with open(completion_flag, "w", encoding="utf-8") as file:
-        current_time = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
+        timestamp = datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S")
         file.write(
-            f"Complete at {current_time} UTC."
+            f"Complete at {timestamp} UTC."
         )
 
     if current_time == "18":

@@ -66,11 +66,13 @@ def get_milky_way_season(context):
     midnight (12:00 AM).
     """
     context["milky_way_season"] = {}
+    get_milky_way_max_angle(
+        context["milky_way_season"], context["lat"], context["lng"]
+    )
 
     observer = ephem.Observer()
     observer.lat = str(context["lat"])
     observer.lon = str(context["lng"])
-    get_milky_way_max_angle(context["milky_way_season"], observer)
     sagittarius = ephem.readdb("Sgr,f|C|F7,17:58:03.470,-26:06:04.6,1.00,2000")
 
     # Determine start date: {current_year}/01/01.

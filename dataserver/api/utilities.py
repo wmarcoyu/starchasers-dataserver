@@ -10,6 +10,9 @@ from dataserver.logger import logger
 from preprocessing.light_pollution.bortle import get_bortle
 
 
+DAYS_OF_ACTIVITY = 4
+
+
 def get_directory(data_type, current_date_str=None):
     """Return the directory path to the most up-to-date data.
 
@@ -68,7 +71,7 @@ def get_coordinates(request_object):
     If `park_id` is not provided or database query comes back with no results,
     then coordinates will be determined by checking query parameters.
 
-    If query parameters do not contain coordinates, throw an error.
+    If query parameters do not contain coordinates information, throw an error.
     """
     def read_coordinates_from_request(request_object):
         """Directly obtain coordinates from request parameters."""
@@ -159,6 +162,201 @@ def get_bortle_class(park_id=None, coordinates=None):
     return get_bortle(lng, lat)
 
 
+def get_setting_rising_pairs(
+        start_date, result_dict, astro_object, observer, timezone
+):
+    """Obtain FOUR setting and rising pairs.
+
+    A setting and rising pair records the setting and rising times of an
+    astronomical object, e.g. Sun, on a given date. For example:
+    {
+      "sunset": xxxx, "sunrise": xxxx
+    }
+
+    object_type is either `sun` or `moon` in our case.
+
+    The goal of this function is to ensure that for any pair, setting time
+    PRECEDES rising time, since we want Sun-free and Moon-free hours.
+    """
+    current_date = start_date
+
+    while len(result_dict) < DAYS_OF_ACTIVITY:
+        observer.date = current_date
+
+        # Compute current setting time.
+        setting = observer.next_setting(astro_object)
+        setting_dt = ephem.localtime(setting)
+        setting_dt = setting_dt.astimezone(timezone)
+
+        # Compute next rising time.
+        rising = observer.next_rising(astro_object)
+        rising_dt = ephem.localtime(rising)
+        rising_dt = rising_dt.astimezone(timezone)
+
+        # Check if rising is after setting. If not, compute one more rising
+        # with date incremented by 1.
+        if rising_dt < setting_dt:
+            observer.date = ephem.Date(
+                datetime.strptime(current_date, "%Y/%m/%d") + timedelta(days=1)
+            )
+
+            rising = observer.next_rising(astro_object)
+            rising_dt = ephem.localtime(rising)
+            rising_dt = rising_dt.astimezone(timezone)
+
+            # If second rising time is still less than setting time,
+            # raise a ValueError.
+            if rising_dt < setting_dt:
+                raise ValueError(
+                    f"Error finding rising time following {setting_dt}."
+                )
+
+        result_dict.append({
+            "set": setting_dt.strftime("%Y/%m/%d %H:%M"),
+            "rise": rising_dt.strftime("%Y/%m/%d %H:%M")
+        })
+
+        # Update current_date.
+        next_date_dt = datetime.strptime(current_date, "%Y/%m/%d") + \
+            timedelta(days=1)
+        current_date = next_date_dt.strftime("%Y/%m/%d")
+
+
+def get_transit(observer, astro_object, rising_dt, current_date, timezone):
+    """Compute transit time following the current rising time."""
+    transit = observer.next_transit(astro_object)
+    transit_dt = ephem.localtime(transit)
+    transit_dt = transit_dt.astimezone(timezone)
+
+    # Make sure that next transit is actually later than next rise.
+    if transit_dt < rising_dt:
+        observer.date = ephem.Date(
+            datetime.strptime(current_date, "%Y/%m/%d") +
+            timedelta(days=1)
+        )
+
+        transit = observer.next_transit(astro_object)
+        transit_dt = ephem.localtime(transit)
+        transit_dt = transit_dt.astimezone(timezone)
+
+        # If second transit is still early than current rise,
+        # raise a ValueError.
+        if transit_dt < rising_dt:
+            raise ValueError(
+                f"Error finding transit time following {rising_dt}."
+            )
+
+    return transit_dt
+
+
+def get_rising_setting_pairs(
+        start_date, result_dict, astro_object, observer, timezone
+):
+    """Get FOUR rising and setting pairs.
+
+    The goal of this function is to ensure that for any pair, rising time
+    PRECEDES setting time.
+    """
+    current_date = start_date
+
+    while len(result_dict) < DAYS_OF_ACTIVITY:
+        observer.date = current_date
+
+        # Compute current rising time.
+        rising = observer.next_rising(astro_object)
+        rising_dt = ephem.localtime(rising)
+        rising_dt = rising_dt.astimezone(timezone)
+
+        # Compute next setting time.
+        setting = observer.next_setting(astro_object)
+        setting_dt = ephem.localtime(setting)
+        setting_dt = setting_dt.astimezone(timezone)
+
+        # Compute next transit, time the object reaches its max angle.
+        transit_dt = get_transit(
+            observer, astro_object, rising_dt, current_date, timezone
+        )
+
+        # Check if setting is after rising. If not, compute one more setting
+        # with date incremented by 1.
+        if setting_dt < rising_dt:
+            observer.date = ephem.Date(
+                datetime.strptime(current_date, "%Y/%m/%d") + timedelta(days=1)
+            )
+
+            setting = observer.next_setting(astro_object)
+            setting_dt = ephem.localtime(setting)
+            setting_dt = setting_dt.astimezone(timezone)
+
+            # If second setting time is still less than rising time,
+            # raise a ValueError.
+            if setting_dt < rising_dt:
+                raise ValueError(
+                    f"Error finding setting time following {rising_dt}."
+                )
+
+        # Just to be safe, check that next transit is no later than next set.
+        if transit_dt > setting_dt:
+            raise ValueError(
+                f"Next transit {transit_dt} is after next set {setting_dt}."
+            )
+
+        result_dict.append({
+            "set": setting_dt.strftime("%Y/%m/%d %H:%M"),
+            "rise": rising_dt.strftime("%Y/%m/%d %H:%M"),
+            "transit": transit_dt.strftime("%Y/%m/%d %H:%M")
+        })
+
+        # Update current_date.
+        next_date_dt = datetime.strptime(current_date, "%Y/%m/%d") + \
+            timedelta(days=1)
+        current_date = next_date_dt.strftime("%Y/%m/%d")
+
+
+def get_object_activity(context, object_type):
+    """Get the activity of an astronomical object.
+
+    See details of `get_setting_rising_pairs` and `get_rising_setting_pairs`.
+    """
+    # Set up observer geolocation information.
+    observer = ephem.Observer()
+    observer.lat = str(context["lat"])
+    observer.lon = str(context["lng"])
+    timezone = pytz.timezone(context["timezone"])
+
+    # Find start date.
+    all_dates = [key for (key, value) in context["data"].items()]
+    start_date = sorted(all_dates)[0]  # earliest of all
+
+    # Determine the astronomical object and the location to store the results
+    # based on object type.
+    if object_type == "sun":
+        astro_object = ephem.Sun()
+        result_dict = context["dark_hours"]
+
+        get_setting_rising_pairs(
+            start_date, result_dict, astro_object, observer, timezone
+        )
+    elif object_type == "moon":
+        astro_object = ephem.Moon()
+        result_dict = context["moon_activity"]
+
+        get_setting_rising_pairs(
+            start_date, result_dict, astro_object, observer, timezone
+        )
+    elif object_type == "milky_way":
+        astro_object = ephem.readdb(
+            "Sgr,f|C|F7,17:58:03.470,-26:06:04.6,1.00,2000"
+        )  # Sagittarius, constellation at Milky Way center
+        result_dict = context["milky_way"]["activity"]
+
+        get_rising_setting_pairs(
+            start_date, result_dict, astro_object, observer, timezone
+        )
+    else:
+        raise TypeError(f"Invalid object type: {object_type}")
+
+
 def get_light_pollution_score(park_id=None, coordinates=None):
     """Fetch Bortle class and return light pollution score.
 
@@ -199,7 +397,7 @@ def get_transparency_score(transparency):
     raise ValueError(f"Invalid input transparency value {transparency}.")
 
 
-def get_milky_way_max_angle(context, observer):
+def get_milky_way_max_angle(result_dict, lat, lng):
     """Add Milky Way center max angle to context.
 
     Milky Way center max angle is independent of time and only depends
@@ -209,11 +407,10 @@ def get_milky_way_max_angle(context, observer):
     Requirements:
     latitude and longitude should already be stored into observer.
     """
-    if observer.lat is None or observer.lon is None:
-        raise ValueError(
-            "Observer is missing coordinates info. Check observer.lat and "
-            "observer.lon."
-        )
+    observer = ephem.Observer()
+    observer.lat = str(lat)
+    observer.lon = str(lng)
+
     # Create a Sagittarius instance, which represents Milky Way center.
     sagittarius = ephem.readdb("Sgr,f|C|F7,17:58:03.470,-26:06:04.6,1.00,2000")
 
@@ -221,7 +418,7 @@ def get_milky_way_max_angle(context, observer):
     transit = observer.next_transit(sagittarius)
     observer.date = transit
     sagittarius.compute(observer)
-    context["max_angle"] = \
+    result_dict["max_angle"] = \
         f"{math.degrees(sagittarius.alt):.2f}\u00b0"
 
 

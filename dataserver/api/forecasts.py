@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 import flask
 from flask import request
 import numpy as np
-import ephem
 import pytz
 import dataserver
 from dataserver.api.authenticate import authenticate
@@ -13,7 +12,7 @@ from dataserver.logger import logger
 from dataserver.api.utilities import get_directory, get_timezone, \
     get_forecast_type_and_hour, get_coordinates, get_lat_lng_idx, round_time, \
     get_light_pollution_score, get_milky_way_max_angle, \
-    compute_hour_score, compute_final_score
+    compute_hour_score, compute_final_score, get_object_activity
 from dataserver.model import get_cloud_humidity_index, get_aerosol_index
 
 
@@ -170,134 +169,24 @@ def get_forecasts(request_object, data_type):
 
 def get_dark_hours(context):
     """Add dark hours and moon activity to context."""
-    dates = [key for (key, value) in context["data"].items()]
-    # lat and lng have to be strings for ephem.
-    lat, lng = str(context["lat"]), str(context["lng"])
     context["dark_hours"] = []
-    timezone = pytz.timezone(context["timezone"])
-
-    observer = ephem.Observer()
-    sun = ephem.Sun()
-
-    observer.lat = lat
-    observer.lon = lng
-
-    for date in dates:
-        observer.date = date
-
-        # Calculate rising and setting times.
-        next_sunrise = observer.next_rising(sun)
-        next_sunset = observer.next_setting(sun)
-
-        # Convert ephem times to datetime objects.
-        next_sunrise_dt = ephem.localtime(next_sunrise)
-        next_sunset_dt = ephem.localtime(next_sunset)
-
-        # Convert times from UTC to local timezone.
-        next_sunrise = next_sunrise_dt.astimezone(timezone)
-        next_sunset = next_sunset_dt.astimezone(timezone)
-
-        context["dark_hours"].append({
-            "sunset": next_sunset.strftime("%Y/%m/%d %H:%M"),
-            "sunrise": next_sunrise.strftime("%Y/%m/%d %H:%M")
-        })
+    get_object_activity(context, "sun")
 
 
 def get_moon_activity(context):
     """Add moon set and rise times to context."""
     context["moon_activity"] = []
-    dates = [key for (key, value) in context["data"].items()]
-    # lat and lng have to be strings for ephem.
-    observer = ephem.Observer()
-    observer.lat = str(context["lat"])
-    observer.lon = str(context["lng"])
-    moon = ephem.Moon()
-    timezone = pytz.timezone(context["timezone"])
-
-    setting_times, rising_times = [], []
-
-    for each_day in range(MOON_FORECAST_DAYS):
-        current_date_dt = datetime.strptime(min(dates), "%Y/%m/%d") + \
-            timedelta(days=each_day)
-        current_date_str = current_date_dt.strftime("%Y/%m/%d")
-
-        observer.date = current_date_str
-
-        next_setting = observer.next_setting(moon)
-        next_rising = observer.next_rising(moon)
-        next_setting_str = ephem.localtime(next_setting).astimezone(timezone).\
-            strftime("%Y/%m/%d %H:%M:%S")
-        next_rising_str = ephem.localtime(next_rising).astimezone(timezone).\
-            strftime("%Y/%m/%d %H:%M:%S")
-
-        # Maintain two sorted lists containing setting times and
-        # rising times, respectively.
-        if len(setting_times) == 0 or setting_times[-1] < next_setting_str:
-            setting_times.append(next_setting_str)
-        if len(rising_times) == 0 or rising_times[-1] < next_rising_str:
-            rising_times.append(next_rising_str)
-
-    # Always start from a setting. If there is a rising time that precedes
-    # the first setting, remove the rising time from the list.
-    if setting_times[0] > rising_times[0]:
-        del rising_times[0]
-
-    # Get 4 (setting, rising) pairs. Moon always has the pattern
-    # (set, rise, set, rise, ...), i.e., setting and rising have to occur
-    # alternately, although they may not happen on the same day.
-    while len(context["moon_activity"]) < MOON_RESULT_DAYS:
-        next_setting = datetime.strptime(
-            setting_times[0], "%Y/%m/%d %H:%M:%S"
-        ).strftime("%Y/%m/%d %H:%M")
-        next_rising = datetime.strptime(
-            rising_times[0], "%Y/%m/%d %H:%M:%S"
-        ).strftime("%Y/%m/%d %H:%M")
-        context["moon_activity"].append({
-            "moonset": next_setting,
-            "moonrise": next_rising
-        })
-        del setting_times[0]
-        del rising_times[0]
+    get_object_activity(context, "moon")
 
 
 def get_milky_way_activity(context):
     """Add Milky Way activity into context."""
     context["milky_way"] = {}
-    dates = [key for (key, value) in context["data"].items()]
-    # lat and lng have to be strings for ephem.
-    observer = ephem.Observer()
-    observer.lat = str(context["lat"])
-    observer.lon = str(context["lng"])
-
-    # Create a Sagittarius instance, which represents Milky Way center.
-    sagittarius = ephem.readdb("Sgr,f|C|F7,17:58:03.470,-26:06:04.6,1.00,2000")
-
-    get_milky_way_max_angle(context["milky_way"], observer)
-
-    # Calculate Sagittarius rising, setting, and transit times.
+    get_milky_way_max_angle(
+        context["milky_way"], context["lat"], context["lng"]
+    )
     context["milky_way"]["activity"] = []
-    timezone = pytz.timezone(context["timezone"])
-    for date in dates:
-        observer.date = date
-
-        rising = observer.next_rising(sagittarius)
-        setting = observer.next_setting(sagittarius)
-        transit = observer.next_transit(sagittarius)
-
-        # Convert to datetime format.
-        rising_dt = ephem.localtime(rising)
-        setting_dt = ephem.localtime(setting)
-        transit_dt = ephem.localtime(transit)
-
-        # Convert to local timezone and add to `context`.
-        rising_time = rising_dt.astimezone(timezone)
-        setting_time = setting_dt.astimezone(timezone)
-        transit_time = transit_dt.astimezone(timezone)
-        context["milky_way"]["activity"].append({
-            "rise": rising_time.strftime("%Y/%m/%d %H:%M"),
-            "set": setting_time.strftime("%Y/%m/%d %H:%M"),
-            "transit": transit_time.strftime("%H:%M")
-        })
+    get_object_activity(context, "milky_way")
 
 
 def compute_score_forecast(context, request_object):
@@ -320,10 +209,10 @@ def compute_score_forecast(context, request_object):
     scores = []
     for dark_hour_object in context["dark_hours"]:
         sunset_dt = datetime.strptime(
-            dark_hour_object["sunset"], "%Y/%m/%d %H:%M"
+            dark_hour_object["set"], "%Y/%m/%d %H:%M"
         )
         sunrise_dt = datetime.strptime(
-            dark_hour_object["sunrise"], "%Y/%m/%d %H:%M"
+            dark_hour_object["rise"], "%Y/%m/%d %H:%M"
         )
         # Round up sunset hour and round down sunrise hour.
         sunset_dt = round_time(sunset_dt, "up")

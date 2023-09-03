@@ -24,11 +24,11 @@ else
 fi
 
 # Enable PostGIS extension.
-psql -U ec2-user -d light_pollution -c "CREATE EXTENSION IF NOT EXISTS postgis;"
-# psql -U ec2-user -d light_pollution -c "CREATE EXTENSION postgis_raster;"
+psql -U $DB_USER -d light_pollution -c "CREATE EXTENSION IF NOT EXISTS postgis;"
+psql -U $DB_USER -d light_pollution -c "CREATE EXTENSION postgis_raster;"
 
 # Import the GeoTiff file into PostGIS.
 # light_pollution is both the name of the database and that of the table.
 raster2pgsql -s 4326 -I -C -M \
 	     preprocessing/light_pollution/World_Atlas_2015.geotiff \
-	     -F -t 100x100 public.light_pollution | psql -U ec2-user -d light_pollution
+	     -F -t 100x100 public.light_pollution | psql -U $DB_USER -d light_pollution

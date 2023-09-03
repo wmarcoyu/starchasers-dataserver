@@ -3,11 +3,14 @@ import flask
 from flask import request
 import dataserver
 from dataserver.logger import logger
+from dataserver.api.authenticate import authenticate
 
 
 @dataserver.app.route("/api/get-park-name/")
 def get_park_name():
     """Return park fullname based on parameter `park_id`."""
+    authenticate(flask.request)
+
     park_id = request.args.get("park_id")
     if park_id is None:
         raise ValueError("park_id cannot be None.")

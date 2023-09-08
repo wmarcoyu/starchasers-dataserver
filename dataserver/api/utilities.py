@@ -178,31 +178,27 @@ def get_setting_rising_pairs(
     The goal of this function is to ensure that for any pair, setting time
     PRECEDES rising time, since we want Sun-free and Moon-free hours.
     """
-    current_date = start_date
+    current_date = timezone.localize(datetime.strptime(start_date, "%Y/%m/%d"))
+    current_date = current_date.astimezone(pytz.UTC)  # in UTC
 
     while len(result_dict) < DAYS_OF_ACTIVITY:
         observer.date = current_date
 
         # Compute current setting time.
         setting = observer.next_setting(astro_object)
-        setting_dt = ephem.localtime(setting)
-        setting_dt = setting_dt.astimezone(timezone)
+        setting_dt = ephem.localtime(setting).astimezone(pytz.UTC)  # UTC
 
         # Compute next rising time.
         rising = observer.next_rising(astro_object)
-        rising_dt = ephem.localtime(rising)
-        rising_dt = rising_dt.astimezone(timezone)
+        rising_dt = ephem.localtime(rising).astimezone(pytz.UTC)  # UTC
 
         # Check if rising is after setting. If not, compute one more rising
         # with date incremented by 1.
         if rising_dt < setting_dt:
-            observer.date = ephem.Date(
-                datetime.strptime(current_date, "%Y/%m/%d") + timedelta(days=1)
-            )
+            observer.date = current_date + timedelta(days=1)
 
             rising = observer.next_rising(astro_object)
-            rising_dt = ephem.localtime(rising)
-            rising_dt = rising_dt.astimezone(timezone)
+            rising_dt = ephem.localtime(rising).astimezone(pytz.UTC)  # UTC
 
             # If second rising time is still less than setting time,
             # raise a ValueError.
@@ -211,42 +207,61 @@ def get_setting_rising_pairs(
                     f"Error finding rising time following {setting_dt}."
                 )
 
+        # Convert back to local timezone before adding to result.
+        setting_dt = setting_dt.astimezone(timezone)
+        rising_dt = rising_dt.astimezone(timezone)
+
         result_dict.append({
             "set": setting_dt.strftime("%Y/%m/%d %H:%M"),
             "rise": rising_dt.strftime("%Y/%m/%d %H:%M")
         })
 
         # Update current_date.
-        next_date_dt = datetime.strptime(current_date, "%Y/%m/%d") + \
-            timedelta(days=1)
-        current_date = next_date_dt.strftime("%Y/%m/%d")
+        current_date = current_date + timedelta(days=1)
 
 
-def get_transit(observer, astro_object, rising_dt, current_date, timezone):
+def get_transit(observer, astro_object, rising_dt, current_date):
     """Compute transit time following the current rising time."""
-    transit = observer.next_transit(astro_object)
-    transit_dt = ephem.localtime(transit)
-    transit_dt = transit_dt.astimezone(timezone)
+    def compute_next_transit(observer, astro_object, current_date):
+        """Compute next transit time based on current_date."""
+        observer.date = current_date
+        transit = observer.next_transit(astro_object)
+        return ephem.localtime(transit).astimezone(pytz.UTC)  # UTC
 
-    # Make sure that next transit is actually later than next rise.
-    if transit_dt < rising_dt:
-        observer.date = ephem.Date(
-            datetime.strptime(current_date, "%Y/%m/%d") +
-            timedelta(days=1)
+    transit_times = []
+
+    # Find transit time based on current_date.
+    transit_times.append(
+        compute_next_transit(observer, astro_object, current_date)
+    )
+
+    # Decrement current_date by half a day and compute another transit time.
+    transit_times.append(
+        compute_next_transit(
+            observer, astro_object, current_date - timedelta(days=0.5)
+        )
+    )
+
+    # Increment current_date by half a day and compute another transit time.
+    transit_times.append(
+        compute_next_transit(
+            observer, astro_object, current_date + timedelta(days=0.5)
+        )
+    )
+
+    # Find the earliest transit time that is after rising_dt.
+    result = current_date + timedelta(days=10)  # effectively the largest
+    for each_transit_time in transit_times:
+        # Both smaller than result and larger than rising_dt.
+        if rising_dt < each_transit_time < result:
+            result = each_transit_time
+
+    if result == current_date + timedelta(days=10):
+        raise ValueError(
+            f"Error finding transit time following {rising_dt}."
         )
 
-        transit = observer.next_transit(astro_object)
-        transit_dt = ephem.localtime(transit)
-        transit_dt = transit_dt.astimezone(timezone)
-
-        # If second transit is still early than current rise,
-        # raise a ValueError.
-        if transit_dt < rising_dt:
-            raise ValueError(
-                f"Error finding transit time following {rising_dt}."
-            )
-
-    return transit_dt
+    return result  # UTC
 
 
 def get_rising_setting_pairs(
@@ -257,36 +272,33 @@ def get_rising_setting_pairs(
     The goal of this function is to ensure that for any pair, rising time
     PRECEDES setting time.
     """
-    current_date = start_date
+    current_date = timezone.localize(datetime.strptime(start_date, "%Y/%m/%d"))
+    current_date = current_date.astimezone(pytz.UTC)  # in UTC
 
     while len(result_dict) < DAYS_OF_ACTIVITY:
         observer.date = current_date
 
         # Compute current rising time.
         rising = observer.next_rising(astro_object)
-        rising_dt = ephem.localtime(rising)
-        rising_dt = rising_dt.astimezone(timezone)
+        rising_dt = ephem.localtime(rising).astimezone(pytz.UTC)  # UTC
 
         # Compute next setting time.
         setting = observer.next_setting(astro_object)
-        setting_dt = ephem.localtime(setting)
-        setting_dt = setting_dt.astimezone(timezone)
+        setting_dt = ephem.localtime(setting).astimezone(pytz.UTC)  # UTC
 
         # Compute next transit, time the object reaches its max angle.
         transit_dt = get_transit(
-            observer, astro_object, rising_dt, current_date, timezone
-        )
+            observer, astro_object, rising_dt, current_date
+        )  # UTC
 
         # Check if setting is after rising. If not, compute one more setting
         # with date incremented by 1.
         if setting_dt < rising_dt:
-            observer.date = ephem.Date(
-                datetime.strptime(current_date, "%Y/%m/%d") + timedelta(days=1)
-            )
+            current_date_plus_one = current_date + timedelta(days=1)
+            observer.date = current_date_plus_one  # UTC
 
             setting = observer.next_setting(astro_object)
-            setting_dt = ephem.localtime(setting)
-            setting_dt = setting_dt.astimezone(timezone)
+            setting_dt = ephem.localtime(setting).astimezone(pytz.UTC)  # UTC
 
             # If second setting time is still less than rising time,
             # raise a ValueError.
@@ -301,6 +313,11 @@ def get_rising_setting_pairs(
                 f"Next transit {transit_dt} is after next set {setting_dt}."
             )
 
+        # Convert to local times before adding to result.
+        rising_dt = rising_dt.astimezone(timezone)
+        setting_dt = setting_dt.astimezone(timezone)
+        transit_dt = transit_dt.astimezone(timezone)
+
         result_dict.append({
             "set": setting_dt.strftime("%Y/%m/%d %H:%M"),
             "rise": rising_dt.strftime("%Y/%m/%d %H:%M"),
@@ -308,9 +325,7 @@ def get_rising_setting_pairs(
         })
 
         # Update current_date.
-        next_date_dt = datetime.strptime(current_date, "%Y/%m/%d") + \
-            timedelta(days=1)
-        current_date = next_date_dt.strftime("%Y/%m/%d")
+        current_date = current_date + timedelta(days=1)  # still in UTC
 
 
 def get_object_activity(context, object_type):

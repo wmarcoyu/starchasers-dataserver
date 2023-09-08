@@ -14,10 +14,10 @@ from bin.dataserver_download import downloader
 
 # Cloud cover and relative humidity
 GFS_PATH = "s3://noaa-gfs-bdp-pds"
-GFS_FILENAME = "gfs.t12z.pgrb2.0p25.f000.idx"
+GFS_FILENAME = "gfs.t12z.pgrb2.0p25.f000"
 # Total aerosol
 GEFS_PATH = "s3://noaa-gefs-pds"
-GEFS_FILENAME = "gefs.chem.t12z.a2d_0p25.f000.grib2.idx"
+GEFS_FILENAME = "gefs.chem.t12z.a2d_0p25.f000.grib2"
 # Time span: 12 years (right exclusive)
 DATA_TIME = 12
 # Maximum number of `downloader` threads
@@ -112,6 +112,7 @@ class HistoryTransparency:
 
         Call function `downloader` in bin/dataserver_download.py.
         """
+        print(f"Start downloading files for month {self.month}.")
         # Construct GFS file_transfer_info.
         gfs_file_transfer_info = []
         for idx, url in enumerate(self.gfs_urls):

@@ -8,8 +8,8 @@ pydocstyle dataserver
 pylint  --disable=cyclic-import,W0511,W0718,E1101 \
         --unsafe-load-any-extension=y dataserver
 
-pycodestyle bin/dataserver_download.py
-pydocstyle bin/dataserver_download.py
+pycodestyle bin
+pydocstyle bin
 pylint --disable=W0511,E0401,W0718 bin/dataserver_download.py
 
 pycodestyle --ignore=E722 tests

@@ -1,4 +1,5 @@
 """Driver to download and process history data."""
+import shutil
 from dataserver.history import HistoryTransparency
 
 
@@ -15,6 +16,10 @@ def download_process_one_month(month):
     # Just stop on exception.
     downloader = HistoryTransparency(START_YEAR, END_YEAR, month)
     downloader.start()
+
+    # Remove downloaded raw data.
+    shutil.rmtree(f"history_data/{month}/gfs")
+    shutil.rmtree(f"history_data/{month}/gefs")
 
 
 if __name__ == "__main__":

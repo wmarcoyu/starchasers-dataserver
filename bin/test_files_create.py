@@ -118,6 +118,7 @@ def clean_directory():
     except FileNotFoundError as _:
         print("Directories already removed. Ready to start processing.")
 
+
 if __name__ == "__main__":
     """Run the procedure."""
     clean_directory()

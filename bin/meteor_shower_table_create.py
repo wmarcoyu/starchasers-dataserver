@@ -102,7 +102,6 @@ if __name__ == "__main__":
         "Quadrantids", ("2023/12/26", "2024/01/16"),
         "2024/01/03", "0500", "120"
     )
-    
 
     table["data"].append(qua)
     table["data"].append(lyr)

@@ -1,0 +1,510 @@
+{
+    "dark_hours": [
+        {
+            "rise": "2023/09/11 06:23",
+            "set": "2023/09/10 18:57"
+        },
+        {
+            "rise": "2023/09/12 06:24",
+            "set": "2023/09/11 18:55"
+        },
+        {
+            "rise": "2023/09/13 06:24",
+            "set": "2023/09/12 18:54"
+        },
+        {
+            "rise": "2023/09/14 06:25",
+            "set": "2023/09/13 18:53"
+        }
+    ],
+    "data": {
+        "2023/09/10": {
+            "11": {
+                "aerosol": 0.06159244468750001,
+                "cloud": 0.0,
+                "humidity": 12.100000000000001,
+                "transparency": 5
+            },
+            "12": {
+                "aerosol": 0.06159244468750001,
+                "cloud": 0.0,
+                "humidity": 12.4,
+                "transparency": 5
+            },
+            "13": {
+                "aerosol": 0.06159244468750001,
+                "cloud": 0.0,
+                "humidity": 11.9,
+                "transparency": 5
+            },
+            "14": {
+                "aerosol": 0.06040603937500001,
+                "cloud": 0.0,
+                "humidity": 11.3,
+                "transparency": 5
+            },
+            "15": {
+                "aerosol": 0.06040603937500001,
+                "cloud": 0.0,
+                "humidity": 9.700000000000001,
+                "transparency": 5
+            },
+            "16": {
+                "aerosol": 0.06040603937500001,
+                "cloud": 0.0,
+                "humidity": 9.200000000000001,
+                "transparency": 5
+            },
+            "17": {
+                "aerosol": 0.05393156500000001,
+                "cloud": 0.0,
+                "humidity": 9.0,
+                "transparency": 5
+            },
+            "18": {
+                "aerosol": 0.05393156500000001,
+                "cloud": 0.0,
+                "humidity": 9.200000000000001,
+                "transparency": 5
+            },
+            "19": {
+                "aerosol": 0.05393156500000001,
+                "cloud": 0.0,
+                "humidity": 9.5,
+                "transparency": 5
+            },
+            "20": {
+                "aerosol": 0.05774979671875001,
+                "cloud": 3.3000000000000003,
+                "humidity": 9.600000000000001,
+                "transparency": 5
+            },
+            "21": {
+                "aerosol": 0.05774979671875001,
+                "cloud": 0.5,
+                "humidity": 9.5,
+                "transparency": 5
+            },
+            "22": {
+                "aerosol": 0.05774979671875001,
+                "cloud": 0.2,
+                "humidity": 9.5,
+                "transparency": 5
+            },
+            "23": {
+                "aerosol": 0.05650582468750001,
+                "cloud": 0.0,
+                "humidity": 9.3,
+                "transparency": 5
+            }
+        },
+        "2023/09/11": {
+            "00": {
+                "aerosol": 0.05650582468750001,
+                "cloud": 0.0,
+                "humidity": 9.1,
+                "transparency": 5
+            },
+            "01": {
+                "aerosol": 0.05650582468750001,
+                "cloud": 0.0,
+                "humidity": 9.0,
+                "transparency": 5
+            },
+            "02": {
+                "aerosol": 0.05812237843750001,
+                "cloud": 0.0,
+                "humidity": 8.9,
+                "transparency": 5
+            },
+            "03": {
+                "aerosol": 0.05812237843750001,
+                "cloud": 0.0,
+                "humidity": 8.700000000000001,
+                "transparency": 5
+            },
+            "04": {
+                "aerosol": 0.05812237843750001,
+                "cloud": 0.0,
+                "humidity": 8.8,
+                "transparency": 5
+            },
+            "05": {
+                "aerosol": 0.06467923781250001,
+                "cloud": 0.0,
+                "humidity": 9.5,
+                "transparency": 5
+            },
+            "06": {
+                "aerosol": 0.06467923781250001,
+                "cloud": 0.0,
+                "humidity": 9.9,
+                "transparency": 5
+            },
+            "07": {
+                "aerosol": 0.06467923781250001,
+                "cloud": 0.0,
+                "humidity": 10.100000000000001,
+                "transparency": 5
+            },
+            "08": {
+                "aerosol": 0.06353577625000001,
+                "cloud": 0.0,
+                "humidity": 10.200000000000001,
+                "transparency": 5
+            },
+            "09": {
+                "aerosol": 0.06353577625000001,
+                "cloud": 0.0,
+                "humidity": 8.9,
+                "transparency": 5
+            },
+            "10": {
+                "aerosol": 0.06353577625000001,
+                "cloud": 0.0,
+                "humidity": 8.4,
+                "transparency": 5
+            },
+            "11": {
+                "aerosol": 0.05201395781250001,
+                "cloud": 0.0,
+                "humidity": 8.700000000000001,
+                "transparency": 5
+            },
+            "12": {
+                "aerosol": 0.05201395781250001,
+                "cloud": 0.0,
+                "humidity": 8.5,
+                "transparency": 5
+            },
+            "13": {
+                "aerosol": 0.05201395781250001,
+                "cloud": 0.0,
+                "humidity": 7.2,
+                "transparency": 5
+            },
+            "14": {
+                "aerosol": 0.04183768312500001,
+                "cloud": 0.0,
+                "humidity": 6.5,
+                "transparency": 5
+            },
+            "15": {
+                "aerosol": 0.04183768312500001,
+                "cloud": 0.0,
+                "humidity": 6.300000000000001,
+                "transparency": 5
+            },
+            "16": {
+                "aerosol": 0.04183768312500001,
+                "cloud": 0.0,
+                "humidity": 6.300000000000001,
+                "transparency": 5
+            },
+            "17": {
+                "aerosol": 0.038591104375000004,
+                "cloud": 0.0,
+                "humidity": 6.0,
+                "transparency": 5
+            },
+            "18": {
+                "aerosol": 0.038591104375000004,
+                "cloud": 0.0,
+                "humidity": 6.0,
+                "transparency": 5
+            },
+            "19": {
+                "aerosol": 0.038591104375000004,
+                "cloud": 0.0,
+                "humidity": 5.800000000000001,
+                "transparency": 5
+            },
+            "20": {
+                "aerosol": 0.04069108406250001,
+                "cloud": 0.0,
+                "humidity": 5.7,
+                "transparency": 5
+            },
+            "21": {
+                "aerosol": 0.04069108406250001,
+                "cloud": 0.0,
+                "humidity": 5.7,
+                "transparency": 5
+            },
+            "22": {
+                "aerosol": 0.04069108406250001,
+                "cloud": 0.0,
+                "humidity": 5.7,
+                "transparency": 5
+            },
+            "23": {
+                "aerosol": 0.04352142875000001,
+                "cloud": 0.0,
+                "humidity": 5.7,
+                "transparency": 5
+            }
+        },
+        "2023/09/12": {
+            "00": {
+                "aerosol": 0.04352142875000001,
+                "cloud": 0.0,
+                "humidity": 5.800000000000001,
+                "transparency": 5
+            },
+            "01": {
+                "aerosol": 0.04352142875000001,
+                "cloud": 0.0,
+                "humidity": 6.0,
+                "transparency": 5
+            },
+            "02": {
+                "aerosol": 0.04858234031250001,
+                "cloud": 0.0,
+                "humidity": 6.300000000000001,
+                "transparency": 5
+            },
+            "03": {
+                "aerosol": 0.04858234031250001,
+                "cloud": 0.0,
+                "humidity": 6.7,
+                "transparency": 5
+            },
+            "04": {
+                "aerosol": 0.04858234031250001,
+                "cloud": 0.0,
+                "humidity": 7.2,
+                "transparency": 5
+            },
+            "05": {
+                "aerosol": 0.055436321875000014,
+                "cloud": 0.0,
+                "humidity": 8.1,
+                "transparency": 5
+            },
+            "06": {
+                "aerosol": 0.055436321875000014,
+                "cloud": 0.0,
+                "humidity": 9.1,
+                "transparency": 5
+            },
+            "07": {
+                "aerosol": 0.055436321875000014,
+                "cloud": 0.0,
+                "humidity": 9.1,
+                "transparency": 5
+            },
+            "08": {
+                "aerosol": 0.05305012687500001,
+                "cloud": 0.0,
+                "humidity": 8.700000000000001,
+                "transparency": 5
+            },
+            "09": {
+                "aerosol": 0.05305012687500001,
+                "cloud": 0.0,
+                "humidity": 7.9,
+                "transparency": 5
+            },
+            "10": {
+                "aerosol": 0.05305012687500001,
+                "cloud": 0.0,
+                "humidity": 6.7,
+                "transparency": 5
+            },
+            "11": {
+                "aerosol": 0.03650352250000001,
+                "cloud": 0.0,
+                "humidity": 6.1000000000000005,
+                "transparency": 5
+            },
+            "12": {
+                "aerosol": 0.03650352250000001,
+                "cloud": 0.0,
+                "humidity": 5.9,
+                "transparency": 5
+            },
+            "13": {
+                "aerosol": 0.03650352250000001,
+                "cloud": 0.0,
+                "humidity": 5.6000000000000005,
+                "transparency": 5
+            },
+            "14": {
+                "aerosol": 0.028079463437500004,
+                "cloud": 0.0,
+                "humidity": 5.300000000000001,
+                "transparency": 5
+            },
+            "15": {
+                "aerosol": 0.028079463437500004,
+                "cloud": 0.0,
+                "humidity": 4.9,
+                "transparency": 5
+            },
+            "16": {
+                "aerosol": 0.028079463437500004,
+                "cloud": 0.0,
+                "humidity": 4.6000000000000005,
+                "transparency": 5
+            },
+            "17": {
+                "aerosol": 0.025421936562500004,
+                "cloud": 0.0,
+                "humidity": 4.3,
+                "transparency": 5
+            },
+            "18": {
+                "aerosol": 0.025421936562500004,
+                "cloud": 0.0,
+                "humidity": 4.1000000000000005,
+                "transparency": 5
+            },
+            "19": {
+                "aerosol": 0.025421936562500004,
+                "cloud": 0.0,
+                "humidity": 4.0,
+                "transparency": 5
+            },
+            "20": {
+                "aerosol": 0.023288537812500003,
+                "cloud": 0.0,
+                "humidity": 3.9000000000000004,
+                "transparency": 5
+            },
+            "21": {
+                "aerosol": 0.023288537812500003,
+                "cloud": 0.0,
+                "humidity": 3.7,
+                "transparency": 5
+            },
+            "22": {
+                "aerosol": 0.023288537812500003,
+                "cloud": 0.0,
+                "humidity": 3.6,
+                "transparency": 5
+            },
+            "23": {
+                "aerosol": 0.023099377187500006,
+                "cloud": 0.0,
+                "humidity": 3.8000000000000003,
+                "transparency": 5
+            }
+        },
+        "2023/09/13": {
+            "00": {
+                "aerosol": 0.023099377187500006,
+                "cloud": 0.0,
+                "humidity": 4.1000000000000005,
+                "transparency": 5
+            },
+            "01": {
+                "aerosol": 0.023099377187500006,
+                "cloud": 0.0,
+                "humidity": 4.3,
+                "transparency": 5
+            },
+            "02": {
+                "aerosol": 0.024941692812500006,
+                "cloud": 0.0,
+                "humidity": 4.5,
+                "transparency": 5
+            },
+            "03": {
+                "aerosol": 0.024941692812500006,
+                "cloud": 0.0,
+                "humidity": 4.800000000000001,
+                "transparency": 5
+            },
+            "04": {
+                "aerosol": 0.024941692812500006,
+                "cloud": 0.0,
+                "humidity": 4.9,
+                "transparency": 5
+            },
+            "05": {
+                "aerosol": 0.025951539062500004,
+                "cloud": 0.0,
+                "humidity": 5.1000000000000005,
+                "transparency": 5
+            },
+            "06": {
+                "aerosol": 0.025951539062500004,
+                "cloud": 0.0,
+                "humidity": 5.5,
+                "transparency": 5
+            },
+            "07": {
+                "aerosol": 0.025951539062500004,
+                "cloud": 0.0,
+                "humidity": 6.0,
+                "transparency": 5
+            },
+            "08": {
+                "aerosol": 0.031322259687500006,
+                "cloud": 0.0,
+                "humidity": 6.300000000000001,
+                "transparency": 5
+            },
+            "09": {
+                "aerosol": 0.031322259687500006,
+                "cloud": 0.0,
+                "humidity": 6.6000000000000005,
+                "transparency": 5
+            },
+            "10": {
+                "aerosol": 0.031322259687500006,
+                "cloud": 0.0,
+                "humidity": 6.9,
+                "transparency": 5
+            }
+        }
+    },
+    "lat": "33.915046",
+    "lng": "-115.842408",
+    "milky_way": {
+        "activity": [
+            {
+                "rise": "2023/09/10 14:38",
+                "set": "2023/09/11 00:08",
+                "transit": "2023/09/10 19:23"
+            },
+            {
+                "rise": "2023/09/11 14:34",
+                "set": "2023/09/12 00:04",
+                "transit": "2023/09/11 19:19"
+            },
+            {
+                "rise": "2023/09/12 14:30",
+                "set": "2023/09/13 00:01",
+                "transit": "2023/09/12 19:15"
+            },
+            {
+                "rise": "2023/09/13 14:26",
+                "set": "2023/09/14 23:53",
+                "transit": "2023/09/13 19:11"
+            }
+        ],
+        "max_angle": "30.01\u00b0"
+    },
+    "moon_activity": [
+        {
+            "rise": "2023/09/11 03:06",
+            "set": "2023/09/10 17:04"
+        },
+        {
+            "rise": "2023/09/12 04:05",
+            "set": "2023/09/11 17:38"
+        },
+        {
+            "rise": "2023/09/13 05:02",
+            "set": "2023/09/12 18:08"
+        },
+        {
+            "rise": "2023/09/14 05:59",
+            "set": "2023/09/13 18:34"
+        }
+    ],
+    "score": "A",
+    "timestamp": "2023091018",
+    "timezone": "America/Los_Angeles"
+}

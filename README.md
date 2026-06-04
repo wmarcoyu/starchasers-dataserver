@@ -1,4 +1,4 @@
-# Starchasers Data Server
+# $${\color{red}\textsf{\textbf{[Retired]}}}$$ Starchasers Data Server
 
 >**NOTE: The data server is currently not accepting public requests. Below is a developer-oriented overview of its structure.**
 
